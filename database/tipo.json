@@ -1,0 +1,10 @@
+{
+    "dados": [
+	{
+		"id": 1,
+		"descricao": "SUV"
+	},{
+		"id": 2,
+        "descricao": "SUV Compacto"
+    }]
+}

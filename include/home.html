@@ -1,0 +1,87 @@
+
+<h2><i class="fa fa-calendar"></i> CALENDARIO</h2>
+Ordenado conforma a data da prova
+<div class="col-lg-12">
+    <div class="panel panel-default">
+        <div class="table-responsive">
+            <table class="table" id="tabelaGrid">
+                <thead>
+                    <tr>
+                        <th>#</th>					
+                        <th>CONCURSO</th>
+                        <th class="hidden-md hidden-sm hidden-xs">CARGO</th>
+                        <th>VAGAS<br>
+                        [N-NP]</th>						
+                        <th>SALARIO</th>
+                        <th>DT PROVA</th>
+                        <th>PAGO</th>
+                        <th>STATUS</th>						
+                        <th>LINK</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<br clear="all"><br clear="all">
+
+<h3>1) Testar técnicas de estudo</h3>
+O primeiro passo é testar a melhor forma de estudo. Há técnicas como resumos, fichas com os itens mais importantes da matéria, mapa mental (um diagrama com desenhos e palavras-chave) e questionários, por exemplo. O aluno terá que experimentar as técnicas para descobrir qual delas faz com que ele memorize melhor o conteúdo.
+ 
+<h3> 2) Revisar o material estudado</h3>
+Se o concurseiro estuda uma matéria, mas não a revisa nos dias seguintes, ele terá dificuldades em memorizar o assunto. A dica é usar os resumos, fichamentos ou a técnica escolhida e revisar a matéria nos dias seguintes.
+<br/>
+Como a tendência é que haja muito conteúdo para reler, o ideal é fazer um cronograma e definir quando revisará cada um. O material revisto deve ser curto e direto. "Todo dia ele aprende uma estrutura nova e revê aquilo que já estudou antes", diz o diretor da Central de Concursos.
+
+<h3>3) Fazer testes depois de estudar</h3>
+Essa técnica deve ser usada apenas quando o concurseiro já tiver estudado o conteúdo. Se ao ler a questão e descobrir que não sabe responder, ele deve investir um tempo em um material de apoio para entender melhor a matéria e, só depois, voltar aos testes. "Não é responder a questão, é trabalhar o tema", diz o professor de técnicas de estudos.  
+<br/>
+
+<h3>4) Tentar escrever sobre o que aprendeu</h3>
+Outra técnica que os estudantes podem aplicar é, após assistir a uma aula ou estudar um material, tentar escrever sobre aquilo que aprendeu. Nesse momento, ele saberá o que ele, de fato, absorveu e o que precisará estudar mais e melhor.
+<br> 
+Sabendo que terá que fazer isso nas próximas vezes, o concurseiro prestará mais atenção no conteúdo e tentará memorizá-lo.
+
+<h3>5) Estudar por até uma hora e fazer intervalos</h3>
+Para quem tem dificuldade de se concentrar, a dica é marcar um tempo de estudo e depois parar para um intervalo. Nesse período, não vale olhar o celular e navegar nas redes sociais. A recomendação dos especialistas é estudar por até uma hora, fazer um intervalo e voltar a estudar por mais uma hora e, assim, sucessivamente.
+<br> 
+Além disso, há aquele que vira a noite estudando. Mas, para o diretor da Central de Concursos, é preciso descansar também, pois é 
+<br><br>
+Fonte: <a href="https://economia.uol.com.br/empregos-e-carreiras/noticias/redacao/2017/05/01/memoria-esta-ruim-veja-5-dicas-para-fixar-conteudo-de-concursos-publicos.htm">UOL</a>
+
+
+<script>
+
+    var loadObjeto = ajaxGenericoGet('./dados.json');
+    loadObjeto = loadObjeto.dados;
+    console.log(loadObjeto)
+    let c = 0;
+    for (i = 0; i < loadObjeto.length -1 ; i++) {
+        c++;
+        loadObjeto[i].concurso;
+        loadObjeto[i].cargo;
+        loadObjeto[i].salario;
+
+        let linha = "";
+        if(loadObjeto[i].concurso != ""){
+            linha = "<tr>";
+            linha += "<td>"+c+"</td>";            
+            linha += "<td>"+loadObjeto[i].concurso+"</td>";
+            linha += "<td>"+loadObjeto[i].cargo+"</td>";
+            linha += "<td>"+loadObjeto[i].vagas[0]+"-"+loadObjeto[i].vagas[1]+"</td>";
+            linha += "<td>R$ "+loadObjeto[i].salario+"</td>";
+            linha += "<td>"+loadObjeto[i].datas[0].prova+"</td>";
+            linha += "<td>"+loadObjeto[i].valor+"</td>";
+            linha += "<td>"+loadObjeto[i].status+"</td>";
+            linha += "<td></td>";
+            linha += "<td></td>";
+            linha += "<td></td>";            
+            linha +="</tr>";
+
+
+            $("#tabelaGrid tbody").append(linha)
+        }
+    }                   
+</script>

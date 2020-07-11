@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+    <!-- HEADER -->
+    <head>
+        <title>CARROS</title>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <!-- ##########     ########## -->
+        <!-- ########## CSS ########## -->
+        <!-- ##########     ########## -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="css/sb-admin-2.css" rel="stylesheet">
+        <link href="css/metisMenu.css" rel="stylesheet">		
+        <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href="css/materialdesignicons.css" rel="stylesheet">        
+        <link href="css/devicon.min.css" rel="stylesheet" charset="utf-8"> 
+        <link href="css/whhg.css" rel="stylesheet" charset="utf-8"> 		
+        <link href="css/style.css" rel="stylesheet">
+        <!-- <link href="css/prism_1.15.0.css" rel="stylesheet"> -->
+        <link href="css/codificacao.css" rel="stylesheet">
+        <!-- ##########      ########## -->
+        <!-- ##########  JS  ########## -->
+        <!-- ##########      ########## -->
+        <script src="js/jquery.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/metisMenu.min.js"></script>
+        <script src="js/sb-admin-2.js"></script>
+        <!-- <script src="js/prism_1.15.0.js"></script> -->
+        <script src="js/funcoes.js"></script>
+        <script src="js/codificacao.js"></script>       
+        <style type="text/css">
+        #wrapper{margin:0 auto;}
+        .carro-linha{
+            border:2px solid gray ;
+            margin:25px 0;
+            border-radius: 10px;
+        }
+        /* .carro-imagem > img{ width:90%; } */
+        .carro-imagem > img.img-thumbnail{
+            max-width: 100%;
+        }
+        .carro-propriedade{
+            border-collapse: collapse;
+        }
+        .carro-propriedade th{
+            text-align: right;
+            padding-right: 5px;
+        }
+        .carro-combustivel{font-weight: bold;padding:3px 9px; text-align: center;}
+        </style> 
+    </head>    
+
+    <body>
+        <div id="wrapper">
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
+                    <div id="filtro"></div>
+                </div>
+                <div class="col-md-1"></div>
+            </div>
+            <hr>
+            <div class="col-md-1"></div>
+            <div class="col-md-10">
+                <div id="listaCarros"></div>
+            </div>
+            <div class="col-md-1"></div>
+        </div>
+        <br clear="all">
+        <a href="https://www.icarros.com.br/catalogo/compare.jsp?modelo=2714&versaoId1=30223&anomodelo=2021&versaoId2=29501&anomodelo=2020">Comparar Carros</a>
+    </body>
+    <script>
+    $(document).ready(function () {
+        
+        inicio();
+
+        let loadTipo = ajaxGenericoGet("database/tipo.json");
+        let loadMontadoras = ajaxGenericoGet("database/montadoras.json");
+
+        carregarSelect('cd_tipo',loadTipo.dados);
+        carregarSelect('cd_montadora',loadMontadoras.dados);
+
+
+        $("#pesquisar").click(function() {
+            carregarListaCarros();
+        });
+
+
+        function carregarSelect(id_elemento, dados ){
+            limparElemento(id_elemento);
+            $.each( dados , function (index, value){
+                $("#"+id_elemento+"").append("<option value='"+dados[index].id+"'>"+dados[index].descricao+"</option>");
+            });        
+        }
+
+        function limparElemento(id_elemento){ $("#"+id_elemento+"").html(); }
+
+
+        function inicio(){
+            injetarURL("filtro","include/filtro.html");
+            carregarListaCarros();
+        }
+
+        function carregarListaCarros(){
+            $("#listaCarros").html('');
+            let loadCarros = ajaxGenericoGet("database/dados.json");
+            let cd_montadora = ( $("#cd_montadora").val() > 0) ? $("#cd_montadora").val() : 0;
+
+            //FILTRAR POR MONTADORA
+            if( $("#cd_montadora").val() > 0 ){
+                loadCarros['dados'] = loadCarros.dados.filter((dados) => {
+                    return dados.cd_montadora == $("#cd_montadora").val();
+                });
+            }
+
+
+            let linha = "";
+            $.each( loadCarros.dados , function (index, value){
+                linha = carregarCarros( loadCarros.dados[index] )
+                $("#listaCarros").append(linha);
+            }); 
+        }
+
+        function carregarCarros( objeto ){
+            //console.log(objeto.ds_consumo_cidade)
+            let imagemCapa = (objeto.imagens.length > 0 ) ? objeto.imagens[0] : "images/carro.png" ;
+            let desenho = "";
+            desenho += "<div class='row carro-linha'>";
+            desenho += "    <div class='col-md-12'><h2>"+objeto.ds_modelo+" - "+objeto.no_valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })+"</h2></div>"
+            desenho += "    <div class='col-md-3 carro-imagem'>";
+            desenho += "        <img class='img-thumbnail' src='"+imagemCapa+"'>";
+            desenho += "    </div>";
+            desenho += "    <div class='col-md-3'>";
+            desenho += "        <h3>Motor</h3>";
+            desenho += "        <table class='carro-propriedade'>"
+            desenho += "            <tr>";
+            desenho += "                <th>Cilindrada: </th>";
+            desenho += "                <td>"+objeto.no_motor.toFixed(1).toString()+"</td>";
+            desenho += "            </tr>";
+            desenho += "            <tr>";
+            desenho += "                <th>Potencia (cv): </th>";
+            desenho += "                <td>"+objeto.no_cv.toString()+"</td>";
+            desenho += "            </tr>";       
+            desenho += "            <tr>";
+            desenho += "                <th>Torque (kgf.m): </th>";
+            desenho += "                <td>"+objeto.no_torque.toString()+"</td>";
+            desenho += "            </tr>";   
+            desenho += "            <tr>";
+            desenho += "                <th>Velocidade Máxima: </th>";
+            desenho += "                <td>"+objeto.ds_velocidade_max.toString()+" km/h</td>";
+            desenho += "            </tr>";                            
+            desenho += "        </table>";
+            desenho += "    </div>";
+            desenho += "    <div class='col-md-3'>";
+            desenho += "        <h3>Consumo</h3>";
+            desenho += "        <table class='carro-propriedade'>"
+            desenho += "            <tr>";
+            desenho += "                <th></th>";
+            if ( (typeof objeto.ds_consumo_rodoviario[0].alcool != "undefined") && (objeto.ds_consumo_rodoviario[0].alcool > 0) ) {
+                desenho += "<td class='carro-combustivel'>Alcool</td>";
+            }
+            if( (typeof objeto.ds_consumo_rodoviario[0].gasolina != "undefined") && (objeto.ds_consumo_rodoviario[0].gasolina > 0) ){
+                desenho += "<td class='carro-combustivel'>Gasolina</td>";
+            }
+            if( (typeof objeto.ds_consumo_rodoviario[0].diesel != "undefined") && (objeto.ds_consumo_rodoviario[0].diesel > 0) ){
+                desenho += "<td class='carro-combustivel'>Diesel</td>";
+            }
+            desenho += "            </tr>";            
+            desenho += "            <tr>";
+            desenho += "                <th>Cidade: </th>";
+            if ( (typeof objeto.ds_consumo_cidade[0].alcool != "undefined") && (objeto.ds_consumo_cidade[0].alcool > 0) ) {
+                desenho += "<td>"+objeto.ds_consumo_cidade[0].alcool+" km/l </td>";
+            }
+            if( (typeof objeto.ds_consumo_cidade[0].gasolina != "undefined") && (objeto.ds_consumo_cidade[0].gasolina > 0) ){
+                desenho += "<td>"+objeto.ds_consumo_cidade[0].gasolina+" km/l </td>";
+            }
+            if( (typeof objeto.ds_consumo_cidade[0].diesel != "undefined") && (objeto.ds_consumo_cidade[0].diesel > 0) ){
+                desenho += "<td>"+objeto.ds_consumo_cidade[0].diesel+" km/l </td>";
+            }
+            desenho += "            </tr>";
+            desenho += "            <tr>";
+            desenho += "                <th>Estrada: </th>";
+            if ( (typeof objeto.ds_consumo_rodoviario[0].alcool != "undefined") && (objeto.ds_consumo_rodoviario[0].alcool > 0) ) {
+                desenho += "<td>"+objeto.ds_consumo_rodoviario[0].alcool+" km/l </td>";
+            }
+            if ( (typeof objeto.ds_consumo_rodoviario[0].gasolina != "undefined") && (objeto.ds_consumo_rodoviario[0].gasolina > 0) ) {            
+                desenho += "<td>"+objeto.ds_consumo_rodoviario[0].gasolina+" km/l </td>";
+            }
+            if( typeof objeto.ds_consumo_rodoviario[0].diesel != "undefined") {
+                desenho += "<td>"+objeto.ds_consumo_rodoviario[0].diesel+" km/l </td>";
+            }
+            desenho += "            </tr>";            
+            desenho += "        </table>";             
+            desenho += "    </div>";
+            desenho += "    <div class='col-md-3'>";
+            desenho += "        <h3>Dimensões</h3>";
+            desenho += "        <table class='carro-propriedade'>"
+            desenho += "            <tr>";
+            desenho += "                <th>Tanque: </th>";
+            desenho += "                <td>"+objeto.no_tanque.toString()+" L</td>";
+            desenho += "            </tr>";
+            desenho += "            <tr>";
+            desenho += "                <th>Porta Malas: </th>";
+            desenho += "                <td>"+objeto.no_porta_mala.toString()+" L</td>";
+            desenho += "            </tr>";       
+            desenho += "        </table>";  
+            desenho += "    </div>";            
+            desenho += "</div>";
+            return desenho;
+        }
+
+        function injetarURL(id_elemento , link ) {
+            $("#"+id_elemento+"").load(link)
+        }   
+
+        function ajaxGenericoGet(url, variaveis) {
+            var tmp = [];
+            $.ajax({
+                'async': false,
+                'type': "GET",
+                'global': false,
+                'dataType': 'html',
+                'url': url,
+                'data': variaveis,
+                'beforeSend': function () {
+                    //abrirCortina();
+                },
+                'success': function (data) {
+                    return tmp = jQuery.parseJSON(data)
+                }, 'error': function (jqXHR, exception) {
+                    //console.log('ERRO');
+                    var msg = '';
+                    if (jqXHR.status === 0) {
+                        msg = 'Not connect.\n Verify Network.';
+                    } else if (jqXHR.status == 404) {
+                        msg = 'Requested page not found. [404]';
+                    } else if (jqXHR.status == 500) {
+                        msg = 'Internal Server Error [500].';
+                    } else if (exception === 'parsererror') {
+                        msg = 'Requested JSON parse failed.';
+                    } else if (exception === 'timeout') {
+                        msg = 'Time out error.';
+                    } else if (exception === 'abort') {
+                        msg = 'Ajax request aborted.';
+                    } else {
+                        msg = 'Uncaught Error.\n' + jqXHR.responseText;
+                    }
+                    alert(msg)
+                    //$('#post').html(msg);            
+                }
+            });
+            return tmp;
+        }
+     
+        /*
+        function injetarModulo(modulo) {
+            if(typeof modulo == "undefined"){ modulo = getUrlParameter('modulo'); }
+            link = "include/" + modulo + "/sidebar.html";
+            $("#side-menu").load(link) 
+        }
+
+        function injetarConteudo() {
+            var modulo = getUrlParameter('modulo');
+            var conteudo = getUrlParameter('conteudo');
+            link = "include/" + modulo + "/"+conteudo+".html";
+            $("#page-wrapper").load(link)
+        }
+
+        function injetarSidebar(modulo) {
+            if(typeof modulo == "undefined"){ modulo = getUrlParameter('modulo'); }
+            link = "include/" + modulo + "/sidebar.html";
+            $("#side-menu").load(link)
+        }
+        function injetarURL(link) {
+            link = "include/" + link + ".html";
+            $("#page-wrapper").load(link)
+        }
+
+        function injetarMain(link) {
+            link = "include/" + link + ".html";
+            $("#page-wrapper").load(link)
+            $('html, body').animate({scrollTop: $('#capitulo').offset().top}, 'slow');
+        }
+        
+        
+        var getUrlParameter = function getUrlParameter(sParam) {
+            var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+                sURLVariables = sPageURL.split('&'),
+                sParameterName,
+                i;
+
+            for (i = 0; i < sURLVariables.length; i++) {
+                sParameterName = sURLVariables[i].split('=');
+
+                if (sParameterName[0] === sParam) {
+                    return sParameterName[1] === undefined ? true : sParameterName[1];
+                }
+            }
+        };   
+
+            injetarURL('home');
+            injetarModulo();
+            injetarSidebar();
+            injetarConteudo();
+        */
+    });
+    </script>    
+</html>
+
+

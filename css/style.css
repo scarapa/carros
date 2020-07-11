@@ -1,0 +1,28 @@
+*{margin:0px;padding:0px;}
+body{margin:0px;padding:0px;}
+
+.rotate-45 {
+	filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=0.5);
+	-webkit-transform: rotate(45deg);
+	-moz-transform: rotate(45deg);
+	-ms-transform: rotate(45deg);
+	-o-transform: rotate(45deg);
+	transform: rotate(45deg);
+}
+.rotate-90 {
+	filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=0.5);
+	-webkit-transform: rotate(90deg);
+	-moz-transform: rotate(90deg);
+	-ms-transform: rotate(90deg);
+	-o-transform: rotate(90deg);
+	transform: rotate(90deg);
+}
+footer { padding-top: 15px !important}
+h2 {margin:0px;padding:10px 0;}
+
+#page-wrapper ul li {margin-left:15px;}
+#page-wrapper ul li ul li{margin-left:15px;}
+
+#page-wrapper ol {margin-left:0px;}
+#page-wrapper ol li {margin-left:5px;}
+pre ~ code{border:1px solid #c1c1c1;}
