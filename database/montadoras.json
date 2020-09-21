@@ -37,6 +37,12 @@
     },{
         "id": 12,
         "descricao": "Nissan"
+    },{
+        "id": 13,
+        "descricao": "Jac Motors"
+    },{
+        "id": 14,
+        "descricao": "CAOA Chery"
     }
     ]
 }

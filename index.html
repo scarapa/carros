@@ -37,6 +37,15 @@
             margin:25px 0;
             border-radius: 10px;
         }
+        .carro-linha .cabecalhoTipo{
+            font-size:200%;
+        }
+        .carro-linha .cabecalhoFabricante{
+            font-size: 150%;
+        }
+        .carro-linha .cabecalhoValor{
+            font-size: 125%;
+        }
         /* .carro-imagem > img{ width:90%; } */
         .carro-imagem > img.img-thumbnail{
             max-width: 100%;
@@ -108,6 +117,13 @@
             let loadCarros = ajaxGenericoGet("database/dados.json");
             let cd_montadora = ( $("#cd_montadora").val() > 0) ? $("#cd_montadora").val() : 0;
 
+            //FILTRAR POR TIUPO
+            if( $("#cd_tipo").val() > 0 ){
+                loadCarros['dados'] = loadCarros.dados.filter((dados) => {
+                    return dados.cd_tipo == $("#cd_tipo").val();
+                });
+            }
+
             //FILTRAR POR MONTADORA
             if( $("#cd_montadora").val() > 0 ){
                 loadCarros['dados'] = loadCarros.dados.filter((dados) => {
@@ -117,7 +133,16 @@
 
 
             let linha = "";
+            let loadMontadoras = ajaxGenericoGet("database/montadoras.json");
+            let loadTipo = ajaxGenericoGet("database/tipo.json");
             $.each( loadCarros.dados , function (index, value){
+
+                var montadora = loadMontadoras.dados.find(item => item.id === loadCarros.dados[index].cd_montadora);    
+                loadCarros.dados[index].ds_montadora = montadora.descricao;
+
+                var tipo = loadTipo.dados.find(item => item.id === loadCarros.dados[index].cd_tipo);
+                loadCarros.dados[index].ds_tipo = tipo.descricao;
+
                 linha = carregarCarros( loadCarros.dados[index] )
                 $("#listaCarros").append(linha);
             }); 
@@ -128,7 +153,9 @@
             let imagemCapa = (objeto.imagens.length > 0 ) ? objeto.imagens[0] : "images/carro.png" ;
             let desenho = "";
             desenho += "<div class='row carro-linha'>";
-            desenho += "    <div class='col-md-12'><h2>"+objeto.ds_modelo+" - "+objeto.no_valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })+"</h2></div>"
+            desenho += "    <div class='col-md-3 col-xl-12 text-left'><span class='cabecalhoTipo'>"+objeto.ds_tipo+"</span></div>"
+            desenho += "    <div class='col-md-8 col-xl-12 text-left'><span class='cabecalhoFabricante'><b>"+objeto.ds_montadora+"</b> - "+objeto.ds_modelo+"</span></div>"
+            desenho += "    <div class='col-md-12'><span class='cabecalhoValor'>"+objeto.no_valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })+"</span></div>"
             desenho += "    <div class='col-md-3 carro-imagem'>";
             desenho += "        <img class='img-thumbnail' src='"+imagemCapa+"'>";
             desenho += "    </div>";
@@ -254,57 +281,6 @@
             return tmp;
         }
      
-        /*
-        function injetarModulo(modulo) {
-            if(typeof modulo == "undefined"){ modulo = getUrlParameter('modulo'); }
-            link = "include/" + modulo + "/sidebar.html";
-            $("#side-menu").load(link) 
-        }
-
-        function injetarConteudo() {
-            var modulo = getUrlParameter('modulo');
-            var conteudo = getUrlParameter('conteudo');
-            link = "include/" + modulo + "/"+conteudo+".html";
-            $("#page-wrapper").load(link)
-        }
-
-        function injetarSidebar(modulo) {
-            if(typeof modulo == "undefined"){ modulo = getUrlParameter('modulo'); }
-            link = "include/" + modulo + "/sidebar.html";
-            $("#side-menu").load(link)
-        }
-        function injetarURL(link) {
-            link = "include/" + link + ".html";
-            $("#page-wrapper").load(link)
-        }
-
-        function injetarMain(link) {
-            link = "include/" + link + ".html";
-            $("#page-wrapper").load(link)
-            $('html, body').animate({scrollTop: $('#capitulo').offset().top}, 'slow');
-        }
-        
-        
-        var getUrlParameter = function getUrlParameter(sParam) {
-            var sPageURL = decodeURIComponent(window.location.search.substring(1)),
-                sURLVariables = sPageURL.split('&'),
-                sParameterName,
-                i;
-
-            for (i = 0; i < sURLVariables.length; i++) {
-                sParameterName = sURLVariables[i].split('=');
-
-                if (sParameterName[0] === sParam) {
-                    return sParameterName[1] === undefined ? true : sParameterName[1];
-                }
-            }
-        };   
-
-            injetarURL('home');
-            injetarModulo();
-            injetarSidebar();
-            injetarConteudo();
-        */
     });
     </script>    
 </html>
