@@ -11,25 +11,13 @@
         <!-- ########## CSS ########## -->
         <!-- ##########     ########## -->
         <link href="css/bootstrap.min.css" rel="stylesheet">
-        <link href="css/sb-admin-2.css" rel="stylesheet">
-        <link href="css/metisMenu.css" rel="stylesheet">		
-        <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css">
-        <link href="css/materialdesignicons.css" rel="stylesheet">        
-        <link href="css/devicon.min.css" rel="stylesheet" charset="utf-8"> 
-        <link href="css/whhg.css" rel="stylesheet" charset="utf-8"> 		
         <link href="css/style.css" rel="stylesheet">
         <!-- <link href="css/prism_1.15.0.css" rel="stylesheet"> -->
-        <link href="css/codificacao.css" rel="stylesheet">
         <!-- ##########      ########## -->
         <!-- ##########  JS  ########## -->
         <!-- ##########      ########## -->
         <script src="js/jquery.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
-        <script src="js/metisMenu.min.js"></script>
-        <script src="js/sb-admin-2.js"></script>
-        <!-- <script src="js/prism_1.15.0.js"></script> -->
-        <script src="js/funcoes.js"></script>
-        <script src="js/codificacao.js"></script>       
         <style type="text/css">
         #wrapper{margin:0 auto;}
         .carro-linha{
@@ -50,6 +38,24 @@
         .carro-imagem > img.img-thumbnail{
             max-width: 100%;
         }
+        .carro-imagem  > .ativo{
+            display: block;
+        }
+        .carro-imagem  > .desativo{
+            display: none;
+        }
+        .controles{
+            position:absolute;
+            margin-top:25%;
+        }
+        .controles > i {
+            background-color: red;
+            padding:10px;
+            border-radius: 20px;
+            text-align: center;
+        }
+        /* .imagemThumb{ float:left; } */
+
         .carro-propriedade{
             border-collapse: collapse;
         }
@@ -148,6 +154,7 @@
             }); 
         }
 
+
         function carregarCarros( objeto ){
             //console.log(objeto.ds_consumo_cidade)
             let imagemCapa = (objeto.imagens.length > 0 ) ? objeto.imagens[0] : "images/carro.png" ;
@@ -157,7 +164,15 @@
             desenho += "    <div class='col-md-8 col-xl-12 text-left'><span class='cabecalhoFabricante'><b>"+objeto.ds_montadora+"</b> - "+objeto.ds_modelo+"</span></div>"
             desenho += "    <div class='col-md-12'><span class='cabecalhoValor'>"+objeto.no_valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })+"</span></div>"
             desenho += "    <div class='col-md-3 carro-imagem'>";
-            desenho += "        <img class='img-thumbnail' src='"+imagemCapa+"'>";
+            desenho += "        <div class='controles' style='float:left'><i class='glyphicon glyphicon-backward'></i></div>";
+            desenho += "        <div class='controles' style='float:rigth'><i class='glyphicon glyphicon-forward'></i></div>";  
+            desenho += "        <div class='listaImagens'>";  
+            //desenho += "        <img class='img-thumbnail' src='"+imagemCapa+"' class='ativo'>";
+            for(i = 0; i < objeto.imagens.length ; i++){
+                let classeImagem = (i == 0)? "ativo":"desativo";
+                desenho += "            <img class='img-thumbnail "+classeImagem+"' src='"+objeto.imagens[i]+"'>";
+            }
+            desenho += "        </div>";          
             desenho += "    </div>";
             desenho += "    <div class='col-md-3'>";
             desenho += "        <h3>Motor</h3>";
