@@ -7,6 +7,18 @@
 		},{
 			"id": 2,
 			"descricao": "SUV Compacto"
+		},{
+			"id": 3,
+			"descricao": "Caminhonete"
+		},{
+			"id": 4,
+			"descricao": "Hatch"
+		},{
+			"id": 5,
+			"descricao": "Sedan"
+		},{
+			"id": 6,
+			"descricao": "Compacto"
 		}
 	]
 }

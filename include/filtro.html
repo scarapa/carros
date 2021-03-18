@@ -13,7 +13,7 @@
 
 <div class="col-md-2">
     <select class="form-control" name="cd_combustivel" id="cd_combustivel">
-        <option value="0">--Combustivel</option>
+        <option value="0"></option>
         <option value="1">Gasolina</option>
         <option value="2">Alcool</option>
         <option value="3">Diesel</option>
@@ -21,6 +21,24 @@
     </select>
 </div>
 
-<div class="col-md-1">
+<div class="col-md-2 col-xs-6">
+    <select class="form-control" name="ds_ordenacao" id="ds_ordenacao">
+        <option value="0">--ORDER</option>
+        <option value="cd_tipo">Tipo</option>
+        <option value="2">Montadora</option>
+        <option value="3">-Cilidandrada</option>
+        <option value="3">-Porta Mala</option>
+    </select>        
+</div>
+
+<div class="col-md-2 col-xs-6">
+    <select class="form-control" name="ds_order" id="ds_order">
+        <option value="0">--ORDER</option>
+        <option value="asc">ASC</option>
+        <option value="desc">DESC</option>
+    </select>        
+</div>
+
+<div class="col-xs-12 col-sm-12 col-md-1">
     <button type="button" class="btn btn-success" id="pesquisar"><i class="fa fa-search"></i>Pesquisar</button>
 </div>
